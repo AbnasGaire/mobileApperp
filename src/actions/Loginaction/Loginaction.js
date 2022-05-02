@@ -1,13 +1,28 @@
 const types = {
-  GET_TOKEN:"GET_TOKEN",  
+  GET_TOKEN:"GET_TOKEN",
+  ERROR:"ERROR",
+  LOGOUT:"LOGOUT",
 };
 
-const getToken = () => {
-    alert("abnas");
-    return {
+const getToken = (data) => {
+     return {
       type: types.GET_TOKEN,
-      payload: "abc",
-    };
+      payload: data,
+    }
   };
 
-export default {getToken,types};
+  const getError = (data) => {
+    return {
+     type: types.ERROR,
+     payload: data,
+   }
+ }
+  const logout = () => {
+    return {
+     type: types.LOGOUT,
+     payload: "",
+   }
+ }
+
+export default {getToken,getError,logout,types};
+
