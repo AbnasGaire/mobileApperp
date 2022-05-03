@@ -5,8 +5,7 @@ import {
   Text,
   View,
   Image,
-  TextInput,
-  TouchableOpacity,AsyncStorageStatic
+  TouchableOpacity
 } from "react-native";
 import {useDispatch, useSelector} from 'react-redux';
 import AsyncStorage from '@react-native-async-storage/async-storage';
@@ -33,11 +32,13 @@ export default function SignIn({navigation}) {
        loginData.login({email:email,password:password})
       .then(response=>{
         if(response.data.token){
+          console.log(response.data.user);
           dispatch(LoginAction.getToken(response.data));
           storeData(response.data.token);
           navigation.navigate("Home");
         }
       }).catch(error=>{
+        console.log(error.response.data.errors,error.response.data)
         dispatch(LoginAction.getError(error.response.data.errors));
       });
     }catch(err){
@@ -71,7 +72,9 @@ export default function SignIn({navigation}) {
                    />
       </View>
 
-      <TouchableOpacity onPress={navigation.navigate("Forget Password")}>
+      <TouchableOpacity 
+      // onPress={navigation.navigate("Forget Password")}
+      >
         <Text style={styles.forgot_button}>Forgot Password?</Text>
       </TouchableOpacity>
 

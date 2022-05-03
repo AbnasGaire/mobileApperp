@@ -22,7 +22,7 @@ function ForgetPassword(){
                    style={styles.TextInput}
                    handleChange={setEmail}
                    placeHolderColor="black"
-                   errors={loginState.loginReducer.error.email??null}
+                   errors={null}
                    />
       </View> 
     <DefaultButton style={styles.loginBtn} title="Send Password Reset link" />
