@@ -8,7 +8,8 @@ import {LoginAction} from '../actions';
 import {
     SignIn,
     SplashScreen,
-    Home
+    Home,
+    ForgetPassword
 } from '../screens';
 import { useDispatch,useSelector } from 'react-redux';
 
@@ -48,11 +49,14 @@ const Navigators = () => {
   return (
     <NavigationContainer>
      <Stack.Navigator>
-       {!isLogin? <Stack.Screen name="Signin" component={SignIn}  options={{headerShown: false}}/>:
+       {!isLogin?
+       <>
+       <Stack.Screen name="Signin" component={SignIn}  options={{headerShown: false}}/>
+       <Stack.Screen name="Forget Password" component={ForgetPassword} />
+       </> :
         <>
           <Stack.Screen name="Home" component={Home} options={{headerTintColor: "blue"}}/>
           <Stack.Screen name="SplashScreen" component={SplashScreen}  options={{headerShown: false}} />
-
        </>
       
 

@@ -1,5 +1,5 @@
 import React from "react";
-import {TextInput,Text,StyleSheet,View} from "react-native";
+import {TextInput,Text,StyleSheet,View,TouchableOpacity} from "react-native";
 
 export function FormInput(props){
     return(
@@ -20,6 +20,17 @@ export function FormInput(props){
         </Text>
     </>
 
+    )
+}
+
+
+export function DefaultButton(props){
+    return(
+        <>
+        <TouchableOpacity style={props.style}>
+         <Text style={styles.loginText}>{props.title}</Text>
+        </TouchableOpacity> 
+        </>
     )
 }
 

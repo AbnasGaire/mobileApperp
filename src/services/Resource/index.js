@@ -1,5 +1,5 @@
 import axios from "axios";
-const SERVER_DOMAIN = "http://192.168.1.6";
+const SERVER_DOMAIN = "http://192.168.1.11";
 
 const apiVersion = "v1.0";
 
