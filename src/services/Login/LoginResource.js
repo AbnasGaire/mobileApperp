@@ -6,7 +6,7 @@ class LoginResource extends ResourceRoute{
         this.baseUrl = SERVER_DOMAIN + `/api/${apiVersion}/`;
     }
     login(data) {
-        return axios.post(`${this.baseUrl}${this.resource}`,data);
+        return axios.post(`${this.baseUrl}${this.resource}/login`,data);
      }
 }
 export default LoginResource;

@@ -16,16 +16,29 @@ import { FormInput } from "../components/common/FormHelper";
 const loginData=new ResourceRoute("auth");
 export default function SignIn({navigation}) {
   const loginState = useSelector((state) => state)
-
+  console.log(loginState);
   const dispatch = useDispatch();
   const [email, setEmail] = useState("");
   const [password, setPassword] = useState("");
+  // const storeData = async (value) => {
+  //   try {
+  //     await AsyncStorage.multiSet(['@token', value.token],['@user',value.user])
+  //   } catch (e) {
+  //     // saving error
+  //   }
+  // }
+
   const storeData = async (value) => {
+    console.log(value,"lalu patey");
+    const firstPair = ["token", value.token]
+    const secondPair = ["user", JSON.stringify(value.user)]
     try {
-      await AsyncStorage.setItem('@token', value)
-    } catch (e) {
-      // saving error
+      await AsyncStorage.multiSet([firstPair, secondPair]);
+    } catch(e) {
+      //save error
     }
+  
+    console.log("Done.")
   }
   const onPressLogin = async () =>{
     try{
@@ -34,7 +47,7 @@ export default function SignIn({navigation}) {
         if(response.data.token){
           console.log(response.data.user);
           dispatch(LoginAction.getToken(response.data));
-          storeData(response.data.token);
+          storeData(response.data);
           navigation.navigate("Home");
         }
       }).catch(error=>{

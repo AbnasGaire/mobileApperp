@@ -17,54 +17,40 @@ import Overtime from '../screens/hr/Overtime';
 import { useDispatch,useSelector } from 'react-redux';
 import Sidebar from './customDrawer';
 import { IconButton, Colors } from 'react-native-paper';
+import { Icon,CheckCircleIcon ,ChevronLeftIcon ,ChevronRightIcon,CircleIcon  } from 'native-base';
 // import {DrawerNavigation} from "./Drawer";
 
 
 const Stack = createNativeStackNavigator();
 const Drawer = createDrawerNavigator();
 
-function DrawerNavigation() {
+function DrawerNavigation(userData) {
   return (
-      <Drawer.Navigator drawerContent={props=><Sidebar {...props} />} >
-        <Drawer.Screen name="Home" component={Home} options={{
+      <Drawer.Navigator drawerContent={props=><Sidebar {...props}/>}  >
+        <Drawer.Screen name="Dashboard" component={Home} options={{
           drawerIcon:({focused,color,size})=>(
-            <IconButton
-              icon="home"
-              color={Colors.black}
-              size={30}
-              onPress={() => console.log('Pressed')}
-            />
-          )
+            <CheckCircleIcon  size="5" mt="0.5" color="emerald.500" />
+          ),
+          drawerLabelStyle:{fontSize:16,color:"black"},
+          drawerLabel:"Dashboard"
         }}/>
         <Drawer.Screen name="Attendance" component={Attendance}  options={{
           drawerIcon:({focused,color,size})=>(
-            <IconButton
-              icon="home"
-              color={Colors.black}
-              size={30}
-              onPress={() => console.log('Pressed')}
-            />
-          )
+            <ChevronLeftIcon size="5" mt="0.5" color="red.500" />
+          ),
+          drawerLabelStyle:{fontSize:16,color:"black" ,fontFamily: "Poppins-Black"}
         }}/>
         <Drawer.Screen name="Leave Request" component={LeaveRequest} options={{
           drawerIcon:({focused,color,size})=>(
-            <IconButton
-              icon="home"
-              color={Colors.black}
-              size={30}
-              onPress={() => console.log('Pressed')}
-            />
-          )
+            <ChevronRightIcon  size="5" mt="0.5" color="yellow.500" />
+          ),
+          drawerLabelStyle:{fontSize:16,color:"black",fontFamily: "Poppins-Black"}
         }}/>
         <Drawer.Screen name="Overtime" component={Overtime} options={{
           drawerIcon:({focused,color,size})=>(
-            <IconButton
-              icon="home"
-              color={Colors.black}
-              size={30}
-              onPress={() => console.log('Pressed')}
-            />
-          )
+            <CircleIcon size="5" mt="0.5" color="blue.500" />
+          ),
+          drawerLabelStyle:{fontSize:16,color:"black",fontFamily: "Poppins-Black"}
         }}/>
       </Drawer.Navigator>
   );
@@ -78,17 +64,22 @@ const Navigators = () => {
     getData();
   },[]);
   const getData = async () => {
+    let values
     try {
-      const value = await AsyncStorage.getItem('@token')
-      if(value !== null) {
-          console.log(value,"alallalala");
-          dispatch(LoginAction.getToken({token:value,isLogin:true}));
+      values = await AsyncStorage.multiGet(['token', 'user'])
+      console.log(value[0],"papapapppppppppppp");
+      if(values[0][1] !== null) {
+          console.log(value[0],"alallalala");
+          dispatch(LoginAction.getToken({token:values[0][1],isLogin:true,user:JSON.parse(values[1][1])}));
       }
     } catch(e) {
-      console.log(e)
+      // read error
     }
+    console.log(JSON.parse(values[1][1]).id,"ppopo",values)
+  
+    // example console.log output:
+    // [ ['@MyApp_user', 'myUserValue'], ['@MyApp_key', 'myKeyValue'] ]
   }
-  // getData();
  let isLogin=loginState.loginReducer.isLogin;
   return (
     <NavigationContainer>
