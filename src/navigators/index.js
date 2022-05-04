@@ -18,13 +18,14 @@ import { useDispatch,useSelector } from 'react-redux';
 import Sidebar from './customDrawer';
 import { IconButton, Colors } from 'react-native-paper';
 import { Icon,CheckCircleIcon ,ChevronLeftIcon ,ChevronRightIcon,CircleIcon  } from 'native-base';
+
 // import {DrawerNavigation} from "./Drawer";
 
 
 const Stack = createNativeStackNavigator();
 const Drawer = createDrawerNavigator();
 
-function DrawerNavigation(userData) {
+function DrawerNavigation() {
   return (
       <Drawer.Navigator drawerContent={props=><Sidebar {...props}/>}  >
         <Drawer.Screen name="Dashboard" component={Home} options={{
