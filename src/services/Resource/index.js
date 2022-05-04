@@ -1,6 +1,6 @@
 import axios from "axios";
 import {useDispatch, useSelector} from 'react-redux';
-const SERVER_DOMAIN = "http://192.168.1.11";
+const SERVER_DOMAIN = "http://192.168.1.8";
 
 const apiVersion = "v1.0";
 
@@ -17,15 +17,15 @@ class ResourceRoute {
         this.resource = resource ? resource: "";
         this.baseUrl = SERVER_DOMAIN + `/api/${apiVersion}/`;
     }
-    getSujan() {
-        return axios.get(`${this.baseUrl}${this.resource}/sujan`);
-     }
     login(data) {
         return axios.post(`${this.baseUrl}${this.resource}/login`,data);
      }
      getAttendance(){
-         console.log(`${this.baseUrl}${this.resource}`);
+
          return axios.get(`${this.baseUrl}${this.resource}`,config);
+     }
+     setAttendance(data){
+         return axios.post(`${this.baseUrl}${this.resource}`,data,config);
      }
 }
 export default ResourceRoute;

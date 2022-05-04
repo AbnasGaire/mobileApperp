@@ -4,6 +4,7 @@ import Store from './src/store';
 import {Provider} from 'react-redux';
 import {LogBox} from "react-native";
 import { NativeBaseProvider} from "native-base";
+import { ToastProvider  } from 'react-native-toast-notifications'
 
 LogBox.ignoreLogs([
 "ViewPropTypes will be removed",
@@ -12,9 +13,12 @@ LogBox.ignoreLogs([
 const App= () =>{
   return (
     <Provider store={Store}>
+      <ToastProvider>
       <NativeBaseProvider>
       <Navigators />
       </NativeBaseProvider>
+      </ToastProvider>
+
 
         
     </Provider>

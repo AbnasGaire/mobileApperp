@@ -6,15 +6,19 @@ import { DataTable } from 'react-native-paper';
 import {useDispatch, useSelector} from 'react-redux';
 import ResourceRoute from "../../services/Resource";
 import {AttendanceAction} from '../../actions';
+import { Time, TimeinModulation } from "../../helper";
+import { ScrollView } from "react-native-gesture-handler";
+import { useToast } from 'react-native-toast-notifications'
 const attendanceResource=new ResourceRoute("hr/attendance");
 function Attendance(){
+  const toast = useToast();
   useEffect(()=>{
     getAttendnace();
   },[]);
   const attendance = useSelector((state) => state)
   const attendanceValue=attendance.attendnceReducer.attendance;
-  // const defaultShift=attendance.attendnceReducer.defaultShift;
-  console.log(attendance.attendnceReducer,attendance);
+  const defaultShift=attendance.attendnceReducer.defaultShift;
+  const attendanceCount=attendance.attendnceReducer.count;
     const [reason,setReason]=useState("");
     const dispatch = useDispatch();
     function getAttendnace(){
@@ -23,40 +27,73 @@ function Attendance(){
           dispatch(AttendanceAction.setAttendance(response.data));
         }
       }).catch(error=>{
-        console.log(error);
+        dispatch(AttendanceAction.setError(error.response.data.errors));
       })
     }
-
-    function onPressLogin(){
-      // attendnceReducer
+    
+    let valueToSend={
+      reason:reason,
+      employee_id:"35",
+      shift_id:1,
+    }
+    function onPressCheckInOut(){
+      console.log("clicked");
+      attendanceResource.setAttendance(valueToSend).then(response=>{
+        console.log(response);
+        setReason("");
+        toast.show("Success!!",{
+          type: "normal ",
+          placement: "top-right",
+          duration: 2000,
+          offset: 30,
+          animationType: "slide-in",
+        });
+        getAttendnace();
+      }).catch(error=>{
+        console.log(error,"error");
+        dispatch(AttendanceAction.setError(error.response.data.errors));
+      })
     }
     return(
         <>
         <View style={styles.container}>
     <View style={styles.header}>
-    <View>
-        {/* <TextInput
+
+      <View>
+      <TextInput
         style={styles.TextInput}
         placeholder={`Enter reason`}
         placeholderTextColor="black"
         onChangeText={ setReason}
-
-        />            */}
-        <TouchableOpacity style={styles.btn} onPress={onPressLogin}>
-           <Text style={styles.text}>Check In</Text>
+        />
+      </View>
+      <View>
+      <TouchableOpacity style={styles.btn} onPress={onPressCheckInOut}>
+           <Text style={styles.text}>{attendanceCount%2==0?"Check In":"Check Out"}</Text>
         </TouchableOpacity>
-        {/* <Text style={defaultShift.name+"from"+defaultShift.from+"to"+defaultShift.to}>Check In</Text> */}
+      </View>
+      
     </View>
+    <View style={{width:"100%", marginLeft:50}}>
+    <Text style={{color:Colors.DEFAULT_RED}}>{attendance.attendnceReducer.error.reason??null}</Text>
+    </View>
+    <View style={{width:"100%", marginLeft:50}}>
+      {defaultShift.name!=undefined&&
+       <Text>{defaultShift.name+" from "+TimeinModulation(defaultShift.from)+" to "+TimeinModulation(defaultShift.to)}</Text>
+      }
     </View>
 
 
     <DataTable>
       <DataTable.Row>
-      <DataTable.Cell style={{width:'20%'}}><Text style={{fontWeight: 'bold'}}>Date</Text></DataTable.Cell>
-        <DataTable.Cell numeric style={{width:'50%'}}><Text style={{fontWeight: 'bold'}}>Check In</Text></DataTable.Cell>
-        <DataTable.Cell numeric style={{width:'30%'}}><Text style={{fontWeight: 'bold'}}>Check Out</Text></DataTable.Cell>
+      <DataTable.Cell width="40%"><Text style={{fontWeight: 'bold'}}>Date</Text></DataTable.Cell>
+        <DataTable.Cell width="20%"><Text style={{fontWeight: 'bold'}}>Check In</Text></DataTable.Cell>
+        <DataTable.Cell width="20%"><Text style={{fontWeight: 'bold'}}>Check Out</Text></DataTable.Cell>
+        <DataTable.Cell width="20%"><Text style={{fontWeight: 'bold'}}>Total hours</Text></DataTable.Cell>
       </DataTable.Row>
-  
+     
+      <ScrollView>
+
       
       {attendanceValue.map(atten=>{
         return(
@@ -66,22 +103,25 @@ function Attendance(){
             <View>
             {
               atten.check_in_time.map(data=>{
-                return   <Text  >
-                  {data}
+                return   <Text  style={{color:"black"}}>
+                  {TimeinModulation(data)}
                   </Text>
                })}
             </View>
           </DataTable.Cell>
           <DataTable.Cell>
           <View>
-          <Text numberOfLines={2}>
-               {
+            {
               atten.check_out_time.map(data=>{
-                return data+'\n' })
-               }
-             </Text>
+                return   <Text   style={{color:"black"}}>
+                  {TimeinModulation(data)}
+                  </Text>
+               })}
           </View>
           </DataTable.Cell>
+
+          <DataTable.Cell>{Time(atten.total_hrs)}</DataTable.Cell>
+    
          
         
     
@@ -98,6 +138,7 @@ function Attendance(){
         </DataTable.Row>
         )
       })}
+      </ScrollView>
       </DataTable>
     </View>
    
@@ -113,8 +154,14 @@ const styles = StyleSheet.create({
  
     },
     header:{
-        height:150,
-        width:100,
+        flexDirection:"row",
+        height:60,
+        width:380,
+        backgroundColor:"#E1F2E9",
+        justifyContent:"space-between",
+        alignItems:"center",
+        marginTop:5,
+        borderRadius:10
     },
     inputView: {
       backgroundColor: Colors.INPUT_COLOR,
@@ -127,12 +174,12 @@ const styles = StyleSheet.create({
   
     TextInput: {
       textAlign:"center",
-      backgroundColor:"gray",
-      width:200,
-      height:50,
+      backgroundColor:"white",
+      width:250,
+      height:40,
       padding: 10,
       fontSize:16,
-      flex:1,
+      marginLeft:10,
       alignItems:"center",
       fontFamily: "Poppins-Black",
       justifyContent:"center"
@@ -140,15 +187,15 @@ const styles = StyleSheet.create({
     text:{
      color:"white",
     },
-  
     btn: {
-      width: "100%",
+      width: 90,
+      height:30,
       borderRadius: 25,
-      height: 45,
       alignItems: "center",
       justifyContent: "center",
       backgroundColor: Colors.BUTTON_COLOR,
-      fontFamily: "Poppins-Bold"
+      fontFamily: "Poppins-Bold",
+      marginRight:10,
     },
   });
 export default Attendance;

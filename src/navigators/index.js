@@ -56,10 +56,10 @@ function DrawerNavigation() {
       </Drawer.Navigator>
   );
 }
-const Navigators = () => {
+const Navigators = ({navigation}) => {
   const loginState = useSelector((state) => state);
   const appState = useRef(AppState.currentState);
-  console.log(appState,"appState");
+  console.log(appState,loginState.loginReducer,"appState");
   const dispatch = useDispatch();
   useEffect(()=>{
     getData();
@@ -68,24 +68,21 @@ const Navigators = () => {
     let values
     try {
       values = await AsyncStorage.multiGet(['token', 'user'])
-      console.log(value[0],"papapapppppppppppp");
-      if(values[0][1] !== null) {
-          console.log(value[0],"alallalala");
+      if(values[0][1] != null) {
           dispatch(LoginAction.getToken({token:values[0][1],isLogin:true,user:JSON.parse(values[1][1])}));
+          navigation.goBack();
       }
     } catch(e) {
       // read error
     }
     console.log(JSON.parse(values[1][1]).id,"ppopo",values)
-  
-    // example console.log output:
-    // [ ['@MyApp_user', 'myUserValue'], ['@MyApp_key', 'myKeyValue'] ]
   }
+  console.log(loginState.loginReducer);
  let isLogin=loginState.loginReducer.isLogin;
   return (
     <NavigationContainer>
      <Stack.Navigator>
-       {false?
+       {!isLogin?
        <>
        <Stack.Screen name="Signin" component={SignIn}  options={{headerShown: false}}/>
        {/* <Stack.Screen name="Forget Password" component={ForgetPassword} /> */}
