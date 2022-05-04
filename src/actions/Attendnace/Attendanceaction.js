@@ -5,7 +5,7 @@ const types = {
   const setAttendance = (data) => {
        return {
         type: types.SET_ATTENDANCE,
-        payload: data,
+        payload: data.attendancesOfEmployee,
       }
     };
 export default {setAttendance,types};

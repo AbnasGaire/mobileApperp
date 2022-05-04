@@ -4,16 +4,30 @@ import { FormInput } from "../../components/common/FormHelper";
 import {Colors} from "../../constant";
 import { DataTable } from 'react-native-paper';
 import {useDispatch, useSelector} from 'react-redux';
-
+import ResourceRoute from "../../services/Resource";
+import {AttendanceAction} from '../../actions';
+const attendanceResource=new ResourceRoute("hr/attendance");
 function Attendance(){
+  useEffect(()=>{
+    getAttendnace();
+  },[]);
   const attendance = useSelector((state) => state)
+  const attendanceValue=attendance.attendnceReducer.attendance;
+  // const defaultShift=attendance.attendnceReducer.defaultShift;
+  console.log(attendance.attendnceReducer,attendance);
     const [reason,setReason]=useState("");
-    console.log(attendance.attendnceReducer.attendance,"attendance");
-    function onPressLogin(){
-
+    const dispatch = useDispatch();
+    function getAttendnace(){
+      attendanceResource.getAttendance().then(response=>{
+        if(response.data){
+          dispatch(AttendanceAction.setAttendance(response.data));
+        }
+      }).catch(error=>{
+        console.log(error);
+      })
     }
 
-    function getAttendnace(){
+    function onPressLogin(){
       // attendnceReducer
     }
     return(
@@ -21,42 +35,72 @@ function Attendance(){
         <View style={styles.container}>
     <View style={styles.header}>
     <View>
-        <TextInput
+        {/* <TextInput
         style={styles.TextInput}
         placeholder={`Enter reason`}
         placeholderTextColor="black"
         onChangeText={ setReason}
 
-        />           
+        />            */}
         <TouchableOpacity style={styles.btn} onPress={onPressLogin}>
            <Text style={styles.text}>Check In</Text>
         </TouchableOpacity>
+        {/* <Text style={defaultShift.name+"from"+defaultShift.from+"to"+defaultShift.to}>Check In</Text> */}
     </View>
     </View>
 
 
-    {/* <DataTable>
-      <DataTable.Header>
-        <DataTable.Title>Date</DataTable.Title>
-        <DataTable.Title numeric>Check In</DataTable.Title>
-        <DataTable.Title numeric>Check out</DataTable.Title>
-      </DataTable.Header>
-
+    <DataTable>
       <DataTable.Row>
-        <DataTable.Cell>Frozen yogurt</DataTable.Cell>
-        <DataTable.Cell numeric>159</DataTable.Cell>
-        <DataTable.Cell numeric>6.0</DataTable.Cell>
+      <DataTable.Cell style={{width:'20%'}}><Text style={{fontWeight: 'bold'}}>Date</Text></DataTable.Cell>
+        <DataTable.Cell numeric style={{width:'50%'}}><Text style={{fontWeight: 'bold'}}>Check In</Text></DataTable.Cell>
+        <DataTable.Cell numeric style={{width:'30%'}}><Text style={{fontWeight: 'bold'}}>Check Out</Text></DataTable.Cell>
       </DataTable.Row>
-
-      <DataTable.Row>
-        <DataTable.Cell>Ice cream sandwich</DataTable.Cell>
-        <DataTable.Cell numeric>237</DataTable.Cell>
-        <DataTable.Cell numeric>8.0</DataTable.Cell>
-      </DataTable.Row>
-      </DataTable> */}
-    </View>
-
+  
+      
+      {attendanceValue.map(atten=>{
+        return(
+          <DataTable.Row>
+          <DataTable.Cell>{atten.date}</DataTable.Cell>
+          <DataTable.Cell>
+            <View>
+            {
+              atten.check_in_time.map(data=>{
+                return   <Text  >
+                  {data}
+                  </Text>
+               })}
+            </View>
+          </DataTable.Cell>
+          <DataTable.Cell>
+          <View>
+          <Text numberOfLines={2}>
+               {
+              atten.check_out_time.map(data=>{
+                return data+'\n' })
+               }
+             </Text>
+          </View>
+          </DataTable.Cell>
+         
         
+    
+
+          
+      
+    
+          
+          {/* {atten.check_out_time.map(data=>{
+            return(
+          <DataTable.Cell numeric>{data}</DataTable.Cell>
+            )
+          })} */}
+        </DataTable.Row>
+        )
+      })}
+      </DataTable>
+    </View>
+   
         </>
     )
 }

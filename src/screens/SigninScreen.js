@@ -20,16 +20,8 @@ export default function SignIn({navigation}) {
   const dispatch = useDispatch();
   const [email, setEmail] = useState("");
   const [password, setPassword] = useState("");
-  // const storeData = async (value) => {
-  //   try {
-  //     await AsyncStorage.multiSet(['@token', value.token],['@user',value.user])
-  //   } catch (e) {
-  //     // saving error
-  //   }
-  // }
 
   const storeData = async (value) => {
-    console.log(value,"lalu patey");
     const firstPair = ["token", value.token]
     const secondPair = ["user", JSON.stringify(value.user)]
     try {

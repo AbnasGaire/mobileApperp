@@ -85,7 +85,7 @@ const Navigators = () => {
   return (
     <NavigationContainer>
      <Stack.Navigator>
-       {!isLogin?
+       {false?
        <>
        <Stack.Screen name="Signin" component={SignIn}  options={{headerShown: false}}/>
        {/* <Stack.Screen name="Forget Password" component={ForgetPassword} /> */}

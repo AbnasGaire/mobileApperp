@@ -5,9 +5,11 @@ const initialState = {
 };
 
 const AttendanceReducer = (state = initialState, action) => {
+  console.log(AttendanceAction.types.SET_ATTENDANCE);
   switch (action.type) {
     case AttendanceAction.types.SET_ATTENDANCE:
-      return {attendance:action.payload.attendance};
+      console.log(action.payload,"aaali");
+      return {attendance:action.payload};
     default:
       return state;
   }
