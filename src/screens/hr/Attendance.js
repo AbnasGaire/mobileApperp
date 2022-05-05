@@ -36,6 +36,7 @@ function Attendance(){
       employee_id:"35",
       shift_id:1,
     }
+    
     function onPressCheckInOut(){
       console.log("clicked");
       attendanceResource.setAttendance(valueToSend).then(response=>{
