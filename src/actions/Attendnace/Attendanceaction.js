@@ -1,6 +1,7 @@
 const types = {
     SET_ATTENDANCE:"SET_ATTENDANCE",
     SET_ERROR:"SET_ERROR",
+    CLEAR_REASON:"CLEAR_REASON",
   };
   
   const setAttendance = (data) => {
@@ -12,7 +13,7 @@ const types = {
 
   const setError = (data) => {
       return {
-       type: types.SET_ATTENDANCE,
+       type: types.SET_ERROR,
        payload: data,
      }
    };

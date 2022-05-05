@@ -8,20 +8,6 @@ import {ScrollView,Stack,Center,Text} from "native-base"
 const Home=({navigation})=>{
     const loginState = useSelector((state) => state)
     const dispatch=useDispatch();
-    const removeValue = async () => {
-        try {
-          await AsyncStorage.clear();
-        } catch(e) {
-          console.log(e);
-        }
-      
-        console.log('Done.')
-      }
-    function onPressLogout(){
-        removeValue();
-        dispatch(LoginAction.logout());
-    
-    }
     let val=130;
     return(
       <ScrollView horizontal={true}>

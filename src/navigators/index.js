@@ -59,7 +59,6 @@ function DrawerNavigation() {
 const Navigators = ({navigation}) => {
   const loginState = useSelector((state) => state);
   const appState = useRef(AppState.currentState);
-  console.log(appState,loginState.loginReducer,"appState");
   const dispatch = useDispatch();
   useEffect(()=>{
     getData();
@@ -67,7 +66,7 @@ const Navigators = ({navigation}) => {
   const getData = async () => {
     let values
     try {
-      values = await AsyncStorage.multiGet(['token', 'user'])
+      values = await AsyncStorage.multiGet(['token', 'user']);
       if(values[0][1] != null) {
           dispatch(LoginAction.getToken({token:values[0][1],isLogin:true,user:JSON.parse(values[1][1])}));
           navigation.goBack();
@@ -75,9 +74,7 @@ const Navigators = ({navigation}) => {
     } catch(e) {
       // read error
     }
-    console.log(JSON.parse(values[1][1]).id,"ppopo",values)
   }
-  console.log(loginState.loginReducer);
  let isLogin=loginState.loginReducer.isLogin;
   return (
     <NavigationContainer>

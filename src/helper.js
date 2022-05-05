@@ -20,3 +20,12 @@ export function TimeinModulation(timeValue){
     return returnTime;
 
 }
+
+export function AvatarName(name){
+    let short=[];
+    let a = name.split(" ");
+    for(var i =0; i<a.length; i++){
+        short.push(a[i].charAt(0, 1));
+    }
+    return short;
+}

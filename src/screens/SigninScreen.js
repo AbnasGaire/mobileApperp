@@ -13,10 +13,12 @@ import {LoginAction} from '../actions';
 import LoginResource from "../services/Login/LoginResource";
 import ResourceRoute from "../services/Resource";
 import { FormInput } from "../components/common/FormHelper";
-const loginData=new ResourceRoute("auth");
+import useConfigHook from "../customHooks/useConfigHook";
+
 export default function SignIn({navigation}) {
+  const  config=useConfigHook();
+  const loginData=new ResourceRoute("auth",config);
   const loginState = useSelector((state) => state)
-  console.log(loginState);
   const dispatch = useDispatch();
   const [email, setEmail] = useState("");
   const [password, setPassword] = useState("");
@@ -27,23 +29,20 @@ export default function SignIn({navigation}) {
     try {
       await AsyncStorage.multiSet([firstPair, secondPair]);
     } catch(e) {
-      //save error
+      console.log(e);
     }
-  
-    console.log("Done.")
   }
   const onPressLogin = async () =>{
     try{
-       loginData.login({email:email,password:password})
+      await loginData.login({email:email,password:password})
       .then(response=>{
         if(response.data.token){
-          console.log(response.data.user);
           dispatch(LoginAction.getToken(response.data));
           storeData(response.data);
           navigation.navigate("Home");
         }
       }).catch(error=>{
-        console.log(error.response.data.errors,error.response.data)
+        console.log(error.response.data, 'aaa')
         dispatch(LoginAction.getError(error.response.data.errors));
       });
     }catch(err){

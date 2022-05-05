@@ -18,7 +18,9 @@ const AttendanceReducer = (state = initialState, action) => {
         count:action.payload.attendanceCount
       };
     case AttendanceAction.types.SET_ERROR:
-      return {defaultShift:state.defaultShift,attendance:[],error:action.payload};
+      return {
+        ...state,
+        error:action.payload};
     default:
       return state;
   }

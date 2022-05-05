@@ -5,17 +5,22 @@ import {View,StyleSheet} from "react-native";
 import {Text} from "native-base";
 import {useDispatch, useSelector} from 'react-redux';
 import {LoginAction} from '../actions';
+import { AvatarName } from "../helper";
 
 function Sidebar({...props}){
   const dispatch=useDispatch();
   const removeValue = async () => {
-      try {
-        await AsyncStorage.clear();
-      } catch(e) {
-        console.log(e);
-      }
+    let keys = ['token', 'user'];
+     AsyncStorage.multiRemove(keys, (err) => {
+        console.log(err);
+    });
+      // try {
+        // await AsyncStorage.clear();
+      // } catch(e) {
+      //   console.log(e);
+      // }
     
-      console.log('Done.')
+      // console.log('Done.')
     }
   function onPressLogout(){
       removeValue();
@@ -39,9 +44,9 @@ function Header(){
     return(
         <View style={styles.mainDiv}>
       <Avatar bg="green.500" source={{
-      uri: "https://images.unsplash.com/photo-1494790108377-be9c29b29330?ixlib=rb-1.2.1&ixid=MnwxMjA3fDB8MHxwaG90by1wYWdlfHx8fGVufDB8fHx8&auto=format&fit=crop&w=687&q=80"
+      uri: userData.avatar_url
     }} style={{marginTop:20}}>
-        AJ
+        {AvatarName(userData.name)}
       </Avatar>
         <Text fontSize="md" bold>{userData.name}</Text>
         <Text fontSize="sm" style={{marginBottom:20}}>{userData.email}</Text>

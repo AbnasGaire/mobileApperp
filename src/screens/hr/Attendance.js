@@ -5,16 +5,22 @@ import {Colors} from "../../constant";
 import { DataTable } from 'react-native-paper';
 import {useDispatch, useSelector} from 'react-redux';
 import ResourceRoute from "../../services/Resource";
+// import  Resource  from "../../services/FunctionResource/Resource";
 import {AttendanceAction} from '../../actions';
 import { Time, TimeinModulation } from "../../helper";
 import { ScrollView } from "react-native-gesture-handler";
 import { useToast } from 'react-native-toast-notifications'
-const attendanceResource=new ResourceRoute("hr/attendance");
+import useConfigHook from "../../customHooks/useConfigHook";
+// const attendanceFunctionResource=Resource("hr/attendance");
+
 function Attendance(){
+  const token=useConfigHook();
+  const attendanceResource= new ResourceRoute("hr/attendance",token);
   const toast = useToast();
   useEffect(()=>{
     getAttendnace();
   },[]);
+
   const attendance = useSelector((state) => state)
   const attendanceValue=attendance.attendnceReducer.attendance;
   const defaultShift=attendance.attendnceReducer.defaultShift;
@@ -23,10 +29,12 @@ function Attendance(){
     const dispatch = useDispatch();
     function getAttendnace(){
       attendanceResource.getAttendance().then(response=>{
+        console.log(response,"lalalalala---------lalalalalal");
         if(response.data){
           dispatch(AttendanceAction.setAttendance(response.data));
         }
       }).catch(error=>{
+        console.log(error);
         dispatch(AttendanceAction.setError(error.response.data.errors));
       })
     }
@@ -37,9 +45,7 @@ function Attendance(){
       shift_id:1,
     }
     function onPressCheckInOut(){
-      console.log("clicked");
       attendanceResource.setAttendance(valueToSend).then(response=>{
-        console.log(response);
         setReason("");
         toast.show("Success!!",{
           type: "normal ",
@@ -61,8 +67,10 @@ function Attendance(){
 
       <View>
       <TextInput
+        value={reason}
         style={styles.TextInput}
-        placeholder={`Enter reason`}
+        placeholder={"Enter reason"}
+        autoFocus={false}
         placeholderTextColor="black"
         onChangeText={ setReason}
         />
