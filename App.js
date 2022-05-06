@@ -3,6 +3,8 @@ import Navigators from "./src/navigators"
 import Store from './src/store';
 import {Provider} from 'react-redux';
 import {LogBox} from "react-native";
+import "intl";
+import "intl/locale-data/jsonp/en";
 import { NativeBaseProvider} from "native-base";
 import { ToastProvider  } from 'react-native-toast-notifications'
 

@@ -2,7 +2,7 @@ import React from "react";
 import axios from "axios";
 import {useDispatch, useSelector} from 'react-redux';
 
-const SERVER_DOMAIN = "http://192.168.1.8";
+const SERVER_DOMAIN = "http://192.168.1.11";
 
 const apiVersion = "v1.0";
 
