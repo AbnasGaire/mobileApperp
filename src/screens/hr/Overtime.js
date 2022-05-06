@@ -8,34 +8,40 @@ import {
   Keyboard,
   KeyboardAvoidingView,
   Platform,
+  Pressable,
+  Dimensions,
 } from 'react-native';
 import {CircleIcon, ScrollView} from 'native-base';
-import {Modal, Portal, Button, Provider, DataTable} from 'react-native-paper';
-import {DatePickerModal} from 'react-native-paper-dates';
-
 import {
-  en,
-  // nl,
-  // de,
-  // pl,
-  // pt,
-  enGB,
-  registerTranslation,
-} from 'react-native-paper-dates'
-registerTranslation('en', en)
-// registerTranslation('nl', nl)
-// registerTranslation('pl', pl)
-// registerTranslation('pt', pt)
-// registerTranslation('de', de)
-registerTranslation('en-GB', enGB)
+  Modal,
+  Portal,
+  Button,
+  Provider,
+  DataTable,
+  TextInput as TI,
+} from 'react-native-paper';
+import {
+  FormDateOrTime,
+  FormInputWithBorder,
+} from '../../components/common/FormHelper';
+import {formatDate, getNumberOfHours} from '../../helper';
 
 function Overtime() {
   const [visible, setVisible] = useState(false);
   const [keyboardShow, setKeyboardShow] = useState();
   const showModal = () => setVisible(true);
-  const hideModal = () => setVisible(false);
-  const [date, setDate] = useState(new Date());
-  const [open, setOpen] = useState(false);
+
+  const [dateValue, setDateValue] = useState(formatDate(new Date()));
+  const [fromTime, setFromTime] = useState('');
+  const [toTime, setToTime] = useState('');
+  const [numberofHours, setNumberofHours] = useState(null);
+  const [reason, setReason] = useState('');
+  const hideModal = () => {
+    setReason('');
+    setToTime('');
+    setFromTime('');
+    setVisible(false);
+  };
   useEffect(() => {
     const keyboardDidShowListener = Keyboard.addListener(
       'keyboardDidShow',
@@ -49,24 +55,86 @@ function Overtime() {
         setKeyboardShow(false);
       },
     );
-
+    console.log(keyboardShow, 'keyboardShow');
     return () => {
       keyboardDidHideListener.remove();
       keyboardDidShowListener.remove();
     };
   }, []);
 
-  const onDismissSingle = React.useCallback(() => {
-    setOpen(false);
-  }, [setOpen]);
+  useEffect(() => {
+    let a = getNumberOfHours(fromTime, toTime);
+    setNumberofHours(a);
+  }, [fromTime, toTime]);
 
-  const onConfirmSingle = React.useCallback(
-    params => {
-      setOpen(false);
-      setDate(params.date);
-    },
-    [setOpen, setDate],
-  );
+  function modalBody() {
+    return (
+      <View style={{flex: 1, flexDirection: 'column'}}>
+        <View style={{flex: 0.6}}>
+          <Text
+            style={{
+              fontSize: 18,
+              fontFamily: 'Poppins-ExtraBold',
+              color: 'black',
+            }}>
+            Overtime Form
+          </Text>
+        </View>
+        <View style={{flex: 4.5}}>
+          <FormDateOrTime
+            title="Date"
+            dateOrTime={dateValue}
+            setDateOrTime={setDateValue}
+            mode="date"
+            style={{backgroundColor: '#F1EEE9', height: 50}}
+          />
+          <FormDateOrTime
+            title="From Time"
+            dateOrTime={fromTime}
+            setDateOrTime={setFromTime}
+            mode="time"
+            style={{backgroundColor: '#F1EEE9', height: 50}}
+          />
+          <FormDateOrTime
+            title="To Time"
+            dateOrTime={toTime}
+            setDateOrTime={setToTime}
+            mode="time"
+            style={{backgroundColor: '#F1EEE9', height: 50}}
+          />
+          {/* <FormInputWithBorder title="Number of Hours" handleChange={val => setNumberofHours(val)}style={{backgroundColor: '#F1EEE9', height: 50}} value={numberofHours} showKeyBoard={false}/> */}
+          <FormInputWithBorder
+            title="Reason"
+            handleChange={val => setReason(val)}
+            style={{backgroundColor: '#F1EEE9', height: 50}}
+            value={reason}
+          />
+        </View>
+        <View
+          style={{
+            display: 'flex',
+            justifyContent: 'space-between',
+            flexDirection: 'row',
+            flex: 0.5,
+            // position:"absolute",
+            buttom: 0,
+            left: 0,
+
+            width: Dimensions.get('window').width - 50,
+            alignItems: 'center',
+          }}>
+          <Button
+            style={{backgroundColor: '#E7264C', width: 115}}
+            onPress={hideModal}>
+            <Text style={{color: 'white'}}>Cancel</Text>
+          </Button>
+          <Button style={{backgroundColor: '#4A90C3', width: 115}}>
+            <Text style={{color: 'white'}}>Submit</Text>
+          </Button>
+        </View>
+      </View>
+    );
+  }
   return (
     <>
       <ScrollView>
@@ -162,73 +230,16 @@ function Overtime() {
             visible={visible}
             onDismiss={hideModal}
             contentContainerStyle={styles.containerStyle}>
-            {/* <KeyboardAvoidingView
-              behavior={Platform.OS === 'ios' ? 'padding' : 'height'}
-              style={styles.container}> */}
-            <View style={styles.container}>
-              <View style={{flex: 0.5}}>
-                <Text
-                  style={{
-                    fontSize: 18,
-                    fontFamily: 'Poppins-ExtraBold',
-                    color: 'black',
-                  }}>
-                  Overtime Form
-                </Text>
-              </View>
-              <View style={{flex: 5}}>
-                <TextInput
-                  label="Date"
-                  onChangeText={() => {}}
-                  style={{backgroundColor: '#F1EEE9'}}
-                  placeholder="Enter reason"
-                />
-                <Button
-                  onPress={() => setOpen(true)}
-                  uppercase={false}
-                  mode="outlined">
-                  Pick single date
-                </Button>
-                <DatePickerModal
-                  locale="en"
-                  mode="single"
-                  visible={open}
-                  onDismiss={onDismissSingle}
-                  date={date}
-                  onConfirm={onConfirmSingle}
-                  // validRange={{
-                  //   startDate: new Date(2021, 1, 2),  // optional
-                  //   endDate: new Date(), // optional
-                  //   disabledDates: [new Date()] // optional
-                  // }}
-                  // onChange={} // same props as onConfirm but triggered without confirmed by user
-                  // saveLabel="Save" // optional
-                  // uppercase={false} // optional, default is true
-                  // label="Select date" // optional
-                  // animationType="slide" // optional, default is 'slide' on ios/android and 'none' on web
-                />
-              </View>
-              {!keyboardShow && (
-                <View
-                  style={{
-                    display: 'flex',
-                    justifyContent: 'space-between',
-                    flexDirection: 'row',
-                    flex: 0.5,
-                  }}>
-                  {/* fooot */}
-                  <Button
-                    style={{backgroundColor: '#E7264C', width: 115}}
-                    onPress={hideModal}>
-                    <Text style={{color: 'white'}}>Cancel</Text>
-                  </Button>
-                  <Button style={{backgroundColor: '#4A90C3', width: 115}}>
-                    <Text style={{color: 'white'}}>Submit</Text>
-                  </Button>
-                </View>
-              )}
-            </View>
-            {/* </KeyboardAvoidingView> */}
+            {keyboardShow ? (
+              <ScrollView
+                showsHorizontalScrollIndicator={false}
+                showsVerticalScrollIndicator={false}
+                style={styles.container}>
+                {modalBody()}
+              </ScrollView>
+            ) : (
+              modalBody()
+            )}
           </Modal>
         </Portal>
       </Provider>
